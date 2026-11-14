@@ -1,0 +1,134 @@
+import os
+import shutil
+from datetime import datetime
+
+# 1. File Organizer
+def organize_files():
+
+    folder_path = input("Enter folder path: ")
+
+    if not os.path.exists(folder_path):
+        print("Folder does not exist!")
+        return
+
+    file_types = {
+        "Images": [".jpg", ".jpeg", ".png", ".gif"],
+        "Documents": [".pdf", ".docx", ".txt", ".pptx"],
+        "Videos": [".mp4", ".mkv", ".avi"],
+        "Music": [".mp3", ".wav"],
+        "Programs": [".py", ".java", ".cpp"],
+        "Others": []
+    }
+
+    for file in os.listdir(folder_path):
+
+        file_path = os.path.join(folder_path, file)
+
+        if os.path.isfile(file_path):
+
+            extension = os.path.splitext(file)[1].lower()
+
+            category = "Others"
+
+            for folder, extensions in file_types.items():
+
+                if extension in extensions:
+                    category = folder
+                    break
+
+            destination = os.path.join(folder_path, category)
+
+            os.makedirs(destination, exist_ok=True)
+
+            new_path = os.path.join(destination, file)
+
+            if os.path.exists(new_path):
+                print("File already exists:", file)
+                continue
+
+            shutil.move(file_path, new_path)
+
+            print(file, "moved to", category)
+
+    print("Files organized successfully!")
+
+
+# 2. Add Daily Task
+def add_task():
+
+    task = input("Enter your task: ")
+
+    date_time = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+
+    with open("daily_tasks.txt", "a") as file:
+        file.write(date_time + " - " + task + "\n")
+
+    print("Task added successfully!")
+
+
+# 3. Show Daily Tasks
+def show_tasks():
+
+    if os.path.exists("daily_tasks.txt"):
+
+        with open("daily_tasks.txt", "r") as file:
+
+            print("\nYour Daily Tasks:")
+            print(file.read())
+
+    else:
+        print("No tasks available!")
+
+
+# 4. Count Files
+def count_files():
+
+    folder_path = input("Enter folder path: ")
+
+    if os.path.exists(folder_path):
+
+        count = 0
+
+        for item in os.listdir(folder_path):
+
+            if os.path.isfile(os.path.join(folder_path, item)):
+                count += 1
+
+        print("Total files:", count)
+
+    else:
+        print("Folder does not exist!")
+
+
+# 5. Main Menu
+while True:
+
+    print("\n================================")
+    print(" FILE ORGANIZER & PRODUCTIVITY ")
+    print("================================")
+    print("1. Organize Files")
+    print("2. Add Daily Task")
+    print("3. Show Daily Tasks")
+    print("4. Count Files")
+    print("5. Exit")
+
+    choice = input("Enter your choice: ")
+
+    if choice == "1":
+        organize_files()
+
+    elif choice == "2":
+        add_task()
+
+    elif choice == "3":
+        show_tasks()
+
+    elif choice == "4":
+        count_files()
+
+    elif choice == "5":
+        print("Thank you for using this project!")
+        break
+
+    else:
+        print("Invalid choice! Please try again.")
